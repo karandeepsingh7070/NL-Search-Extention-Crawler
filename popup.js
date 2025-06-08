@@ -4,10 +4,9 @@ document.getElementById("scan-site").addEventListener("click", () => {
         document.getElementById("status").textContent = "🔍 Scanning " + siteURL;
 
         try {
-            const response = await fetch(`http://localhost:8000/extract?url=${siteURL}&scanType=brief`, {
+            const response = await fetch(`http://localhost:8000/extract?url=${siteURL}&scanType=full`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
-                //   body: JSON.stringify({ url: siteURL, siteType: "brief" })
             });
             let jsonResults = await response.json()
             let completeData = []
@@ -18,7 +17,7 @@ document.getElementById("scan-site").addEventListener("click", () => {
             const contentList = document.getElementById("contentList");
             document.getElementById("status").textContent = `Scanned ${totalScans} sections & ${jsonResults?.data?.length} Pages`;
             let visibleChunks = completeData[0]?.slice(0, 20)
-            visibleChunks.forEach(item => {
+            visibleChunks?.length && visibleChunks.forEach(item => {
                 const li = document.createElement("li");
                 li.innerHTML = `
                 <strong>${item.sectionTitle}</strong><br/>
@@ -61,3 +60,19 @@ document.getElementById("search-site").addEventListener("click", async () => {
       }
 
 });
+
+document.getElementById("search-ask").addEventListener("click", async () => {
+    const query = document.getElementById("searchInput").value;
+    if (!query) return alert("Please enter a query");
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const siteUrl = new URL(tab.url);
+  
+    const response = await fetch(`http://localhost:8000/ask?url=${siteUrl}&query=${encodeURIComponent(query)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+  
+    const data = await response.json();
+    const contentList = document.getElementById("contentList");
+    contentList.innerHTML = `<li><strong>AI:</strong> ${data.answer}</li>`;
+  });
