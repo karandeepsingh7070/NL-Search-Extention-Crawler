@@ -1,50 +1,41 @@
-document.getElementById("loadRSS").addEventListener("click", () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const tabId = tabs[0].id;
-        chrome.scripting.executeScript( // to exceute and inject the content js file
-            {
-                target: { tabId: tabId },
-                files: ["content.js"],
-            },
-            () => {
-                chrome.tabs.sendMessage(tabs[0].id, { action: "FIND_RSS" }, async (response) => {
-                    if (!response || !response.feeds.length) {
-                        document.getElementById("rssResults").innerText = "No RSS feed found.";
-                        return;
-                    }
+document.getElementById("scan-site").addEventListener("click", () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+        const siteURL = tabs[0].url;
+        document.getElementById("status").textContent = "🔍 Scanning " + siteURL;
 
-                    const rssUrl = response.feeds[0]; // take first feed
-                    document.getElementById("rssResults").innerText = `Found RSS: ${rssUrl}`;
-
-                    const res = await fetch(rssUrl);
-                    const xmlText = await res.text();
-                    const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-                    const items = xmlDoc.querySelectorAll("item");
-
-                    const feed = [...items].map((item) => ({
-                        title: item.querySelector("title")?.textContent,
-                        link: item.querySelector("link")?.textContent,
-                        pubDate: item.querySelector("pubDate")?.textContent,
-                        description: item.querySelector("description")?.textContent,
-                    }));
-
-                    const container = document.getElementById("rssResults");
-                    container.innerHTML = feed
-                        .map(
-                            (entry) =>
-                                `<div style="margin-bottom:10px">
-                             <strong>${entry.title}</strong><br/>
-                             <a href="${entry.link}" target="_blank">Read more</a>
-                          </div>`
-                        )
-                        .join("");
-                });
-            })
-    });
+        try {
+            const response = await fetch(`http://localhost:8000/extract?url=${siteURL}&scanType=brief`, {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+            //   body: JSON.stringify({ url: siteURL, siteType: "brief" })
+            });
+            let jsonResults = await response.json()
+            let completeData = []
+            let totalScans = jsonResults?.data?.reduce((acc,cur) => {
+                completeData.push(cur?.content)
+                return acc + (cur?.content?.length || 0);
+              }, 0)
+            const contentList = document.getElementById("contentList");
+            document.getElementById("status").textContent = `Scanned ${totalScans} sections & ${jsonResults?.data?.length} Pages`;
+              let visibleChunks = completeData[0]?.slice(0,20)
+              visibleChunks.forEach(item => {
+              const li = document.createElement("li");
+              li.innerHTML = `
+                <strong>${item.sectionTitle}</strong><br/>
+                <p>${item.sectionSummary}</p>
+                ${item.sectionURL ? `<a href="${item.sectionURL}" target="_blank">Read more</a>` : ""}
+                <hr/>
+              `;
+              contentList.appendChild(li);
+            });
+          } catch (err) {
+            console.error(err);
+            document.getElementById("status").textContent = "❌ Failed to Scan the Site.";
+          }
+})
 });
 
-document.getElementById("searchBtn").addEventListener("click", () => {
+document.getElementById("search-site").addEventListener("click", () => {
     const query = document.getElementById("searchInput").value;
     const container = document.getElementById("results");
 

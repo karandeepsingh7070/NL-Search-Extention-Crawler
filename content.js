@@ -32,32 +32,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
   });
 
-function getInternalLinks() {
-  const anchors = [...document.querySelectorAll('a[href]')];
-  const base = location.origin;
-
-  const urls = new Set();
-
-  for (let a of anchors) {
-    try {
-      const href = new URL(a.href, base);
-      if (href.origin === base) {
-        urls.add(href.href.split('#')[0]); // remove fragments
+  chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+    if (request.action === "SCAN_SITE_FOR_EMBEDDINGS") {
+        // let data = await fetch("http://localhost:8000/extract?url=https://nytimes.com&scanType=brief")
+        // sendResponse({feeds : data});
+        // data.then(async (res) => {
+        //   // let result = await res.json()
+        // }).catch(err => {
+        //   sendResponse({feeds : []});
+        // })
       }
-    } catch {}
-  }
-
-  return [...urls];
-}
-
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "FIND_RSS") {
-      try {
-        const links = document.querySelectorAll("link[rel='alternate'][type='application/rss+xml']");
-        const feeds = [...links].map(link => link.href);
-        sendResponse({ feeds });
-      } catch (e) {
-        sendResponse({ feeds: [] });
-      }
-    }
   });

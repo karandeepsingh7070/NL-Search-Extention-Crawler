@@ -1,16 +1,21 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>NL Web Searcher</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <h2>Search this site</h2>
-    <input type="text" id="searchInput" placeholder="Ask something..." />
-    <button id="loadRSS">Load RSS Feed</button>
-    <div id="rssResults"></div>
-    <button id="searchBtn">Search</button>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Site NL Search</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 AI Brief</h1>
+    <button id="scan-site">Scan Site</button>
+    <div id="status">.</div>
+    <input type="text" id="searchInput" placeholder="Ask anything about this site..." />
+    <button id="search-site">Search</button>
+    <ul id="contentList"></ul>
     <div id="results"></div>
-    <script src="popup.js"></script>
-  </body>
+  </div>
+  <script src="popup.js"></script>
+</body>
 </html>
