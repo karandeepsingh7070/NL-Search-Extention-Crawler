@@ -1,21 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Smart Site NL Search</title>
-  <link rel="stylesheet" href="style.css"/>
-</head>
-<body>
-  <div class="container">
-    <h1>🔍 AI Brief</h1>
-    <button id="scan-site">Scan Site</button>
-    <div id="status">.</div>
-    <input type="text" id="searchInput" placeholder="Ask anything about this site..." />
-    <button id="search-site">Search</button>
-    <button id="search-ask">Ask</button>
-    <ul id="contentList"></ul>
-  </div>
-  <script src="popup.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PromptNest: Smart Site NL Search</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1 class="title">🚀 PromptNest</h1>
+        <p class="subtitle">AI-powered Smart Site NL Search</p>
+        <div id="timer" class="timer">⏱️ 0.0s</div>
+      </header>
+
+      <div class="tabs">
+        <div class="tab active" data-tab="scan">Scan</div>
+        <div class="tab" data-tab="search">Search & Ask</div>
+      </div>
+
+      <div class="tab-content active" id="scan">
+        <div class="toolbar">
+          <div class="option-group">
+            <label>Fetch RSS Feeds:</label>
+            <label><input type="radio" name="rss" value="yes" checked /> Yes</label>
+            <label><input type="radio" name="rss" value="no" /> No</label>
+          </div>
+          <div class="option-group">
+            <label for="scan-type">Scan Type:</label>
+            <select id="scan-type">
+              <option value="brief">Brief</option>
+              <option value="full">Full Page (Recommended)</option>
+              <option value="extensive">Extensive</option>
+            </select>
+          </div>
+        </div>
+        <button id="scan-site" class="primary-button">🔍 Scan Site</button>
+        <div id="status" class="status">Waiting to scan...</div>
+        <ul id="datawrap" class="data-list"></ul>
+      </div>
+
+      <div class="tab-content hide" id="search">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Ask anything about this site..."
+          class="input"
+        />
+        <div class="button-row">
+          <button id="search-site" class="secondary-button">🔎 Search</button>
+          <button id="search-ask" class="accent-button">💬 Ask</button>
+        </div>
+        <ul id="contentList" class="content-list"></ul>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
 </html>
