@@ -36,9 +36,9 @@ document.getElementById("scan-site").addEventListener("click", (e) => {
             visibleChunks?.length && visibleChunks.forEach(item => {
                 const li = document.createElement("li");
                 li.innerHTML = `
-                <strong>${item.sectionTitle}</strong><br/>
-                <p>${item.sectionSummary}</p>
-                ${item.sectionURL ? `<a href="${item.sectionURL}" target="_blank">Read more</a>` : ""}
+                <strong class="card title">${item.sectionTitle}</strong><br/>
+                <p class="card description">${item.sectionSummary}</p>
+                ${item.sectionURL ? `<a class="card link" href="${item.sectionURL}" target="_blank">Read more</a>` : ""}
                 <hr/>
               `;
                 contentList.appendChild(li);
@@ -71,9 +71,9 @@ document.getElementById("search-site").addEventListener("click", async (e) => {
         results.forEach(item => {
             const li = document.createElement("li");
             li.innerHTML = `
-            <strong>${item.sectionTitle}</strong><br/>
-            <p>${item.sectionSummary}</p>
-            ${item.sectionURL ? `<a href="${item.sectionURL}" target="_blank">Read more</a>` : ""}
+            <strong class="card title">${item.sectionTitle}</strong><br/>
+            <p class="card description">${item.sectionSummary}</p>
+            ${item.sectionURL ? `<a class="card link" href="${item.sectionURL}" target="_blank">Read more</a>` : ""}
             <hr/>
           `;
             contentList.appendChild(li);
@@ -107,7 +107,7 @@ document.getElementById("search-ask").addEventListener("click", async (e) => {
     currentElm.classList.remove("loader")
     currentElm.innerText = originalText
     const contentList = document.getElementById("contentList");
-    contentList.innerHTML = `<li><strong>AI:</strong> ${data.answer}</li>`;
+    contentList.innerHTML = `<li><strong>Reply:</strong> ${data.answer}</li>`;
   });
   
 
